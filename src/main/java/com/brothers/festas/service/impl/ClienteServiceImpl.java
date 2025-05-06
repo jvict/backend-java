@@ -5,10 +5,12 @@ import com.brothers.festas.dto.response.ClienteResponseDTO;
 import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Cliente;
 import com.brothers.festas.repository.ClienteRepository;
-import com.brothers.festas.service.ClienteService;
+import com.brothers.festas.service.IClienteService;
 import com.brothers.festas.util.ClienteMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,7 +20,7 @@ import java.util.Optional;
 @Service
 @Primary
 @RequiredArgsConstructor
-public class ClienteServiceImpl implements ClienteService {
+public class ClienteServiceImpl implements IClienteService {
 
     private final ClienteRepository clienteRepository;
     private final ClienteMapper clienteMapper;
@@ -29,8 +31,9 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public List<ClienteResponseDTO> findAll() {
-        return clienteMapper.toClienteDTO(clienteRepository.findAll());
+    public Page<ClienteResponseDTO> findAll(Pageable pageable) {
+        return clienteRepository.findAll(pageable)
+                .map(clienteMapper::toClienteDTO);
     }
 
     @Override
@@ -69,4 +72,6 @@ public class ClienteServiceImpl implements ClienteService {
        return clienteRepository.findById(id)
                .orElseThrow(()-> new ServiceException("Usuario não encontrado no banco de dados!"));
     }
+
+
 }

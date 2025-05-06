@@ -1,16 +1,12 @@
 package com.brothers.festas.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,34 +25,34 @@ public class Cliente {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "celular", nullable = false)
+    @Column(name = "celular")
     private String celular;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "documento", nullable = false, unique = true)
+    @Column(name = "documento", unique = true)
     private String documento;
 
-    @Column(name = "cep", nullable = false)
+    @Column(name = "cep")
     private String cep;
 
-    @Column(name = "endereco", nullable = false)
+    @Column(name = "endereco")
     private String endereco;
 
-    @Column(name = "numero", nullable = false)
+    @Column(name = "numero")
     private String numero;
 
-    @Column(name = "complemento", nullable = false)
+    @Column(name = "complemento")
     private String complemento;
 
-    @Column(name = "bairro", nullable = false)
+    @Column(name = "bairro")
     private String bairro;
 
-    @Column(name = "cidade", nullable = false)
+    @Column(name = "cidade")
     private String cidade;
 
-    @Column(name = "uf", nullable = false)
+    @Column(name = "uf")
     private String uf;
 
     @Column(name = "status", nullable = false)
@@ -68,4 +64,21 @@ public class Cliente {
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
+    // Dados de aniversariante relacionados ao contrato
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
+
+    @Column(name = "idade")
+    private Integer idade;
+
+    @Column(name = "idade_no_evento")
+    private Integer idadeNoEvento;
+
+    @Column(name = "tema")
+    private String tema;
+
+    // Contrato
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contrato_id")
+    private Contrato contrato;
 }

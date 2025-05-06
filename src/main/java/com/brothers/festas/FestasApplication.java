@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories
 @EnableCaching
+
 public class FestasApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FestasApplication.class, args);
 	}
-
 }
