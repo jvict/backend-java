@@ -3,7 +3,6 @@ package com.brothers.festas.dto.response;
 import com.brothers.festas.model.Cliente;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

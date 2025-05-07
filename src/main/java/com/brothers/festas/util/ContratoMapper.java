@@ -1,11 +1,17 @@
 package com.brothers.festas.util;
 
 import com.brothers.festas.dto.request.ContratoRequestDTO;
+import com.brothers.festas.dto.response.AniversarianteResponseDTO;
+import com.brothers.festas.dto.response.ContratoCalendarioResponseDTO;
 import com.brothers.festas.dto.response.ContratoResponseDTO;
+import com.brothers.festas.dto.response.ItemContratoResponseDTO;
+import com.brothers.festas.dto.response.PagamentoResponseDTO;
+import com.brothers.festas.dto.response.TemaResponseDTO;
 import com.brothers.festas.model.Aniversariante;
 import com.brothers.festas.model.Cliente;
 import com.brothers.festas.model.Contrato;
 import com.brothers.festas.model.ItemContrato;
+import com.brothers.festas.model.Pagamento;
 import com.brothers.festas.model.Tema;
 import com.brothers.festas.repository.AniversarianteRepository;
 import com.brothers.festas.repository.ClienteRepository;
@@ -15,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -52,72 +59,83 @@ public class ContratoMapper {
         List<ItemContrato> itensContrato = itemContratoRepository.findAllById(dto.getItensContrato());
         contrato.setItensContrato(itensContrato);
 
-        List<Tema> temas = temaRepository.findAllById(dto.getTemas());
-        contrato.setTemas(temas);
-
         return contrato;
     }
 
     public ContratoResponseDTO toResponse(Contrato contrato) {
-        ContratoResponseDTO dto = new ContratoResponseDTO();
+        return ContratoResponseDTO.builder()
+                .id(contrato.getId())
+                .cliente(contrato.getCliente() != null ? contrato.getCliente().getId() : null)
+                .valorRecebido(contrato.getValorRecebido())
+                .valorPendente(contrato.getValorPendente())
+                .valorTotal(contrato.getValorTotal())
+                .tipoDoContrato(contrato.getTipoDoContrato())
+                .dataHoraInicial(contrato.getDataHoraInicial())
+                .dataHoraFinal(contrato.getDataHoraFinal())
+                .duracao(contrato.getDuracao())
+                .quantidadeConvidados(contrato.getQuantidadeConvidados())
+                .observacoes(contrato.getObservacoes())
+                .desconto(contrato.getDesconto())
+                .acrescimo(contrato.getAcrescimo())
+                .itensContrato(contrato.getItensContrato() != null ? contrato.getItensContrato().stream()
+                        .map(this::toItemContratoResponseDTO).toList() : List.of())
+                .listaAniversariantes(contrato.getListaAniversariantes() != null ? contrato.getListaAniversariantes().stream()
+                        .map(this::toAniversarianteResponseDTO).toList() : List.of())
+                .pagamentos(contrato.getPagamentos() != null ? contrato.getPagamentos().stream()
+                        .map(this::toPagamentoResponseDTO).toList() : List.of())
+                .build();
+    }
 
-        dto.setId(contrato.getId());
-        dto.setValorRecebido(contrato.getValorRecebido());
-        dto.setValorPendente(contrato.getValorPendente());
-        dto.setValorTotal(contrato.getValorTotal());
-        dto.setCliente(contrato.getCliente().getId());
-        dto.setTipoDoContrato(contrato.getTipoDoContrato());
-        dto.setDataHoraInicial(contrato.getDataHoraInicial());
-        dto.setDataHoraFinal(contrato.getDataHoraFinal());
-        dto.setDuracao(contrato.getDuracao());
-        dto.setQuantidadeConvidados(contrato.getQuantidadeConvidados());
-        dto.setObservacoes(contrato.getObservacoes());
-        dto.setDesconto(contrato.getDesconto());
-        dto.setAcrescimo(contrato.getAcrescimo());
+    public ContratoCalendarioResponseDTO toResponseCalendario(Contrato contrato) {
+        return ContratoCalendarioResponseDTO.builder()
+                .id(contrato.getId())
+                .nomeCliente(contrato.getCliente() != null ? contrato.getCliente().getNome() : null)
+                .valorRecebido(contrato.getValorRecebido())
+                .valorPendente(contrato.getValorPendente())
+                .valorTotal(contrato.getValorTotal())
+                .dataHoraInicial(contrato.getDataHoraInicial())
+                .dataHoraFinal(contrato.getDataHoraFinal())
+                .build();
+    }
 
-        /*
-        // aniversariantes (Clientes)
-        List<AniversarianteResponseDTO> aniversariantes = contrato.getListaAniversariantes().stream()
-                .map(cli -> {
-                    AniversarianteResponseDTO ar = new AniversarianteResponseDTO();
-                    ar.setName(cli.getNome());
-                    ar.setDate(cli.getDataNascimento().toString());
-                    ar.setTema(cli.getTema());
-                    ar.setAge(cli.getIdade());
-                    ar.setAgeAtEvent(cli.getIdadeNoEvento());
-                    return ar;
-                }).collect(Collectors.toList());
-        dto.setListaAniversariantes(aniversariantes);
+    public TemaResponseDTO toTemaResponseDTO(Tema tema) {
+        return TemaResponseDTO.builder()
+                .id(tema.getId())
+                .descricao(tema.getDescricao())
+                .observacoes(tema.getObservacoes())
+                .build();
+    }
 
+    public ItemContratoResponseDTO toItemContratoResponseDTO(ItemContrato itemContrato) {
+        return ItemContratoResponseDTO.builder()
+                .id(itemContrato.getId())
+                .descricao(itemContrato.getDescricao())
+                .valor(itemContrato.getValor())
+                .build();
+    }
 
+    public AniversarianteResponseDTO toAniversarianteResponseDTO(Aniversariante aniversariante) {
+        return AniversarianteResponseDTO.builder()
+                .id(aniversariante.getId())
+                .nome(aniversariante.getNome())
+                .dataNascimento(aniversariante.getDataNascimento())
+                .idade(aniversariante.getIdade())
+                .idadeNoEvento(aniversariante.getIdadeNoEvento())
+                .tema(aniversariante.getTemas().stream()
+                        .map(TemaResponseDTO::new)
+                        .collect(Collectors.toList()))
+                .build();
+    }
 
-        // itens do contrato
-        List<ItemContratoResponseDTO> itensDto = contrato.getItemContrato().stream()
-                .map(item -> {
-                    ItemContratoResponseDTO it = new ItemContratoResponseDTO(item.getDescricao(), item.getValor());
-                    return it;
-                }).collect(Collectors.toList());
-        dto.setItemContrato(itensDto);
-        */
-
-
-        /*
-        // pagamentos
-        List<PagamentoResponseDTO> pagamentosDto = contrato.getPagamentos().stream()
-                .map(p -> {
-                    PagamentoResponseDTO pr = new PagamentoResponseDTO();
-                    pr.setId(p.getId());
-                    pr.setValor(p.getValor());
-                    pr.setMeioPagamento(p.getMeioPagamento());
-                    pr.setDataPagamentos(p.getDataPagamentos());
-                    pr.setRecebido(p.getRecebido());
-                    pr.setObservacoes(p.getObservacoes());
-                    return pr;
-                }).collect(Collectors.toList());
-        dto.setPayments(pagamentosDto);
-
-         */
-
-        return dto;
+    private PagamentoResponseDTO toPagamentoResponseDTO(Pagamento pagamento) {
+        return PagamentoResponseDTO.builder()
+                .id(pagamento.getId())
+                .valor(pagamento.getValor())
+                .meioPagamento(pagamento.getMeioPagamento())
+                .dataPagamento(pagamento.getDataPagamento())
+                .recebido(pagamento.getRecebido())
+                .observacoes(pagamento.getObservacoes())
+                .contratoId(pagamento.getContrato().getId())
+                .build();
     }
 }

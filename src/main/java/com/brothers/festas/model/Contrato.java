@@ -53,14 +53,6 @@ public class Contrato {
 
     @ManyToMany
     @JoinTable(
-            name = "contrato_tema",
-            joinColumns = @JoinColumn(name = "contrato_id"),
-            inverseJoinColumns = @JoinColumn(name = "tema_id")
-    )
-    private List<Tema> temas;
-
-    @ManyToMany
-    @JoinTable(
             name = "contrato_item",
             joinColumns = @JoinColumn(name = "contrato_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id")

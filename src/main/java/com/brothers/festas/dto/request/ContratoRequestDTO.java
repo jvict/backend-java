@@ -22,7 +22,6 @@ public class ContratoRequestDTO {
     private Double desconto;
     private Double acrescimo;
 
-    private List<Long> temas;
     private List<Long> itensContrato;
     private List<Long> listaAniversariantes;
 

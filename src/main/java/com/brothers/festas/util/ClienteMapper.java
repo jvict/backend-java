@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -79,4 +80,7 @@ public class ClienteMapper {
         cliente.setDataAtualizacao(LocalDateTime.now());
     }
 
+    public ClienteResponseDTO toClienteDTO(Optional<Cliente> cliente) {
+        return new ClienteResponseDTO(cliente.get());
+    }
 }

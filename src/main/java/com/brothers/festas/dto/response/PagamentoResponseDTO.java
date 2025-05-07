@@ -3,6 +3,7 @@ package com.brothers.festas.dto.response;
 import com.brothers.festas.model.Pagamento;
 import com.brothers.festas.model.enums.EnumMeioPagamento;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PagamentoResponseDTO {
 
     private Long id;

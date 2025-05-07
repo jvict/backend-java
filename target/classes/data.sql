@@ -13,3 +13,9 @@ VALUES
     ('Marcelo Souza', '(71) 98745-6321', 'marcelo.souza@email.com', '258.963.741-00', '40010-020', 'Avenida Sete de Setembro', '1500', 'Sala 505', 'Campo Grande', 'Salvador', 'BA', true, '2025-04-25T22:36:18.567890'),
     ('Juliana Martins', '(62) 99856-7412', 'juliana.martins@email.com', '753.159.852-00', '74115-010', 'Avenida 85', '1000', 'Quadra 10', 'Setor Marista', 'Goiânia', 'GO', true, '2025-04-25T22:37:30.678901'),
     ('Lucas Pereira', '(85) 98523-6974', 'lucas.pereira@email.com', '963.852.741-00', '60170-250', 'Avenida Beira Mar', '2500', 'Apto 1802', 'Meireles', 'Fortaleza', 'CE', true, '2025-04-25T22:38:45.789012');
+
+INSERT INTO tb_usuario (name, email, password)
+VALUES
+    ('João Victor', 'jvictor.jvt@gmail.com', '24250209'),
+    ('Maria Silva', 'maria.silva@gmail.com', 'senha123'),
+    ('Carlos Oliveira', 'carlos.oliveira@gmail.com', 'senha456');

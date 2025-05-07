@@ -1,20 +1,22 @@
 package com.brothers.festas.service.impl;
 
+import com.brothers.festas.dto.response.ContratoCalendarioResponseDTO;
+import com.brothers.festas.dto.response.ContratoResponseDTO;
 import com.brothers.festas.model.Contrato;
 import com.brothers.festas.repository.ContratoRepository;
 import com.brothers.festas.service.ContratoService;
+import com.brothers.festas.util.ContratoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ContratoServiceImpl implements ContratoService {
 
     private final ContratoRepository contratoRepository;
+    private final ContratoMapper contratoMapper;
 
     @Override
     public Contrato salvarContrato(Contrato contrato) {
@@ -22,21 +24,22 @@ public class ContratoServiceImpl implements ContratoService {
     }
 
     @Override
-    public Page<Contrato> listarContratos(Pageable pageable) {
-        return contratoRepository.findAll(pageable);
+    public Page<ContratoResponseDTO> listarContratos(Pageable pageable) {
+        return contratoRepository.findAll(pageable)
+                .map(contratoMapper::toResponse);
     }
 
     @Override
-    public Contrato buscarContratoPorId(Long id) {
-        return contratoRepository.findById(id)
+    public Page<ContratoCalendarioResponseDTO> listarContratosCalendario(Pageable pageable) {
+        return contratoRepository.findAll(pageable)
+                .map(contratoMapper::toResponseCalendario);
+    }
+
+    @Override
+    public ContratoResponseDTO buscarContratoPorId(Long id) {
+        Contrato contrato = contratoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contrato não encontrado com ID: " + id));
-    }
 
-    @Override
-    public void deletarContrato(Long id) {
-        if (!contratoRepository.existsById(id)) {
-            throw new RuntimeException("Contrato não encontrado para deletar com ID: " + id);
-        }
-        contratoRepository.deleteById(id);
+        return contratoMapper.toResponse(contrato);
     }
 }

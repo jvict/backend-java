@@ -31,6 +31,12 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
+    public Page<ClienteResponseDTO> findByNome(Pageable pageable, String nome) {
+        return clienteRepository.findByNomeContainingIgnoreCase(nome, pageable)
+                .map(clienteMapper::toClienteDTO);
+    }
+
+    @Override
     public Page<ClienteResponseDTO> findAll(Pageable pageable) {
         return clienteRepository.findAll(pageable)
                 .map(clienteMapper::toClienteDTO);

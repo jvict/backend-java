@@ -1,12 +1,18 @@
 package com.brothers.festas.dto.response;
 
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ContratoResponseDTO {
 
     private Long id;

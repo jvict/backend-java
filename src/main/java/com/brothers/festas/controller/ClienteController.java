@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
-import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000/")
 @RestController
 @RequestMapping("/cliente")
 @RequiredArgsConstructor
@@ -35,6 +35,11 @@ public class ClienteController {
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(clienteService.findById(id));
+    }
+
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<Page<ClienteResponseDTO>> findByName(Pageable pageable, @PathVariable String nome) {
+        return ResponseEntity.ok().body(clienteService.findByNome(pageable, nome));
     }
 
     @GetMapping

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface IClienteService {
     ClienteResponseDTO findById(Long Id);
+    Page<ClienteResponseDTO> findByNome(Pageable pageable, String nome);
     Page<ClienteResponseDTO> findAll(Pageable pageable);
     ClienteResponseDTO register(ClienteRequestDTO clienteDTO);
     ClienteResponseDTO update(Long id, ClienteRequestDTO clienteDTO);
