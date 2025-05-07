@@ -29,8 +29,6 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    public static final String ADMIN = "ADMIN";
-    public static final String USER = "USER";
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -47,9 +45,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
-                        .requestMatchers("/contrato/**").hasAnyAuthority("USER", "ADMIN")
-                        .requestMatchers("/cliente/**").hasAnyAuthority("USER", "ADMIN")
-                        .requestMatchers("/pagamento/**").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
@@ -61,7 +56,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -72,7 +66,6 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 
