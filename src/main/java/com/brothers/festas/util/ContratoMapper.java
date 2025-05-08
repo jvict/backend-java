@@ -121,9 +121,7 @@ public class ContratoMapper {
                 .dataNascimento(aniversariante.getDataNascimento())
                 .idade(aniversariante.getIdade())
                 .idadeNoEvento(aniversariante.getIdadeNoEvento())
-                .tema(aniversariante.getTemas().stream()
-                        .map(TemaResponseDTO::new)
-                        .collect(Collectors.toList()))
+                .tema(aniversariante.getTema() != null ? new TemaResponseDTO(aniversariante.getTema()) : null)
                 .build();
     }
 

@@ -6,6 +6,7 @@ import com.brothers.festas.dto.response.ClienteResponseDTO;
 import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Aniversariante;
 import com.brothers.festas.model.Cliente;
+import com.brothers.festas.model.Tema;
 import com.brothers.festas.repository.AniversarianteRepository;
 import com.brothers.festas.repository.TemaRepository;
 import com.brothers.festas.service.AniversarianteService;
@@ -34,8 +35,12 @@ public class AniversarianteServiceImpl implements AniversarianteService {
         aniversariante.setIdade(request.getIdade());
         aniversariante.setIdadeNoEvento(request.getIdadeNoEvento());
 
-        if (request.getTemas() != null){
-            aniversariante.setTemas(temaRepository.findAllById(request.getTemas()));
+        if (request.getTema() != null) {
+            temaRepository.findById(request.getTema())
+                    .ifPresentOrElse(
+                            aniversariante::setTema,
+                            () -> { throw new ServiceException("Tema não encontrado com ID: " + request.getTema()); }
+                    );
         }
 
         return new AniversarianteResponseDTO(aniversarianteRepository.save(aniversariante));

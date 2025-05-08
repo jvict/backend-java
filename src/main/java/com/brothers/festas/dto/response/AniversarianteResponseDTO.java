@@ -1,14 +1,10 @@
 package com.brothers.festas.dto.response;
 
 import com.brothers.festas.model.Aniversariante;
-import com.brothers.festas.model.Tema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -20,7 +16,7 @@ public class AniversarianteResponseDTO {
     private String dataNascimento;
     private Integer idade;
     private Integer idadeNoEvento;
-    private List<TemaResponseDTO> tema;
+    private TemaResponseDTO tema;
 
     public AniversarianteResponseDTO(Aniversariante aniversariante) {
         this.id = aniversariante.getId();
@@ -28,9 +24,7 @@ public class AniversarianteResponseDTO {
         this.dataNascimento = aniversariante.getDataNascimento();
         this.idade = aniversariante.getIdade();
         this.idadeNoEvento = aniversariante.getIdadeNoEvento();
-        this.tema = aniversariante.getTemas().stream()
-                .map(TemaResponseDTO::new)
-                .collect(Collectors.toList());
+        this.tema = aniversariante.getTema() != null ? new TemaResponseDTO(aniversariante.getTema()) : null;
     }
 }
 

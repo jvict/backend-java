@@ -1,5 +1,6 @@
 package com.brothers.festas.service.impl;
 
+import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Cliente;
 import com.brothers.festas.service.IClienteImportService;
 import org.apache.poi.ss.usermodel.*;
@@ -49,7 +50,7 @@ public class ClienteImportServiceImpl implements IClienteImportService {
                 clienteRepository.save(cliente);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao importar Excel: " + e.getMessage(), e);
+            throw new ServiceException("Erro ao importar Excel: " + e.getMessage(), e.getMessage());
         }
     }
 

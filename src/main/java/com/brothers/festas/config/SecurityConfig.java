@@ -29,6 +29,8 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
+    public static final String ADMIN = "ADMIN";
+    public static final String USER = "USER";
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -43,8 +45,14 @@ public class SecurityConfig {
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                         .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority(ADMIN)
+                        .requestMatchers("/user/**").hasAnyAuthority(USER, ADMIN)
+                        .requestMatchers("/contrato/**").hasAnyAuthority(USER, ADMIN)
+                        .requestMatchers("/aniversariante/**").hasAnyAuthority(USER, ADMIN)
+                        .requestMatchers("/item-contrato/**").hasAnyAuthority(USER, ADMIN)
+                        .requestMatchers("/tema/**").hasAnyAuthority(USER, ADMIN)
+                        .requestMatchers("/cliente/**").hasAnyAuthority(USER, ADMIN)
+                        .requestMatchers("/pagamento/**").hasAnyAuthority(USER, ADMIN)
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
@@ -68,7 +76,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
+    
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new AccessDeniedHandler() {

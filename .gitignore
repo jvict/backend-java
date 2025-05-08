@@ -1,0 +1,47 @@
+# Compilados do Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
+
+# Diretórios do Spring Boot Loader
+/BOOT-INF/
+/META-INF/
+/org/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Configuração de IDEs
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.project
+.classpath
+.settings/
+.target/
+
+# VS Code
+.vscode/
+
+# Arquivos de ambiente e variáveis
+*.env
+
+# Arquivos temporários
+*.tmp
+*.swp
+
+# Arquivos de testes de integração temporários
+test-output/
+surefire-reports/
+jacoco.exec
+
+# Arquivos de build Gradle (caso use Gradle)
+build/
+.gradle/
