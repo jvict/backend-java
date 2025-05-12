@@ -1,5 +1,6 @@
 package com.brothers.festas.dto.response;
 
+import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.List;
 public class ContratoResponseDTO {
 
     private Long id;
-    private Long cliente;
+    private ClienteResponseDTO cliente;
     private Double valorRecebido;
     private Double valorPendente;
     private Double valorTotal;
@@ -28,6 +29,9 @@ public class ContratoResponseDTO {
     private String observacoes;
     private Double desconto;
     private Double acrescimo;
+    private EnumSituacaoContrato situacao;
+    private LocalDateTime dataCadastro;
+    private LocalDateTime dataAtualizacao;
 
     private List<TemaResponseDTO> temas;
     private List<ItemContratoResponseDTO> itensContrato;

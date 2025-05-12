@@ -1,5 +1,6 @@
 package com.brothers.festas.model;
 
+import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
 import lombok.*;
 import jakarta.persistence.*;
@@ -47,6 +48,10 @@ public class Contrato {
     @Column(name = "qtd_convidados")
     private String quantidadeConvidados;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "situacao")
+    private EnumSituacaoContrato situacao;
+
     private String observacoes;
     private Double desconto;
     private Double acrescimo;
@@ -69,5 +74,11 @@ public class Contrato {
 
     @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos;
+
+    @Column(name = "data_cadastro", nullable = false)
+    private LocalDateTime dataCadastro;
+
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
 
 }

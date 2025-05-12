@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,14 +30,10 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public Page<ClienteResponseDTO> findByNome(Pageable pageable, String nome) {
-        return clienteRepository.findByNomeContainingIgnoreCase(nome, pageable)
-                .map(clienteMapper::toClienteDTO);
-    }
+    public Page<ClienteResponseDTO> findAllByFilters(String nome, Pageable pageable) {
+        String nomeFilter = (nome != null && !nome.isBlank()) ? nome : null;
 
-    @Override
-    public Page<ClienteResponseDTO> findAll(Pageable pageable) {
-        return clienteRepository.findAll(pageable)
+        return clienteRepository.findAllByFilters(nomeFilter, pageable)
                 .map(clienteMapper::toClienteDTO);
     }
 

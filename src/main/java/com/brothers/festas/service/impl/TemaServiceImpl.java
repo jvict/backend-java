@@ -5,7 +5,7 @@ import com.brothers.festas.dto.response.TemaResponseDTO;
 import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Tema;
 import com.brothers.festas.repository.TemaRepository;
-import com.brothers.festas.service.TemaService;
+import com.brothers.festas.service.ITemaService;
 import com.brothers.festas.util.ContratoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TemaServiceImpl implements TemaService {
+public class TemaServiceImpl implements ITemaService {
     @Autowired
     private TemaRepository temaRepository;
 
@@ -34,14 +34,8 @@ public class TemaServiceImpl implements TemaService {
     }
 
     @Override
-    public Page<TemaResponseDTO> findByDescricao(Pageable pageable, String descricao) {
-        return temaRepository.findByDescricaoContainingIgnoreCase(descricao, pageable)
-                .map(contratoMapper::toTemaResponseDTO);
-    }
-
-    @Override
-    public Page<TemaResponseDTO> findAll(Pageable pageable) {
-        return temaRepository.findAll(pageable)
+    public Page<TemaResponseDTO> findAllByFilters(Pageable pageable, String descricao) {
+        return temaRepository.findAllByFilters(pageable, descricao)
                 .map(contratoMapper::toTemaResponseDTO);
     }
 

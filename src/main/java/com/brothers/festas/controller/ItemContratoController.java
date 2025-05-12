@@ -2,8 +2,7 @@ package com.brothers.festas.controller;
 
 import com.brothers.festas.dto.request.ItemContratoRequestDTO;
 import com.brothers.festas.dto.response.ItemContratoResponseDTO;
-import com.brothers.festas.dto.response.TemaResponseDTO;
-import com.brothers.festas.service.ItemContratoService;
+import com.brothers.festas.service.IItemContratoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,12 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http:localhost:3000/")
 @RestController
 @RequestMapping("/item-contrato")
 public class ItemContratoController {
     @Autowired
-    private ItemContratoService service;
+    private IItemContratoService service;
 
     @PostMapping
     public ResponseEntity<ItemContratoResponseDTO> criar(@Valid @RequestBody ItemContratoRequestDTO request) {
@@ -28,13 +27,9 @@ public class ItemContratoController {
         return ResponseEntity.ok().body(service.findById(id));
     }
 
-    @GetMapping("/descricao/{descricao}")
-    public ResponseEntity<Page<ItemContratoResponseDTO>> findByName(Pageable pageable, @PathVariable String descricao) {
-        return ResponseEntity.ok().body(service.findByDescricao(pageable, descricao));
-    }
-
     @GetMapping
-    public ResponseEntity<Page<ItemContratoResponseDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok().body(service.findAll(pageable));
+    public ResponseEntity<Page<ItemContratoResponseDTO>> findAll(Pageable pageable,
+                                                                 @RequestParam(name = "descricao", required = false) String descricao) {
+        return ResponseEntity.ok().body(service.findAll(pageable, descricao));
     }
 }

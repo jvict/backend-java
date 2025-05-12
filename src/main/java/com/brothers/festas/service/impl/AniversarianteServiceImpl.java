@@ -2,14 +2,11 @@ package com.brothers.festas.service.impl;
 
 import com.brothers.festas.dto.request.AniversarianteRequestDTO;
 import com.brothers.festas.dto.response.AniversarianteResponseDTO;
-import com.brothers.festas.dto.response.ClienteResponseDTO;
 import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Aniversariante;
-import com.brothers.festas.model.Cliente;
-import com.brothers.festas.model.Tema;
 import com.brothers.festas.repository.AniversarianteRepository;
 import com.brothers.festas.repository.TemaRepository;
-import com.brothers.festas.service.AniversarianteService;
+import com.brothers.festas.service.IAniversarianteService;
 import com.brothers.festas.util.ContratoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AniversarianteServiceImpl implements AniversarianteService {
+public class AniversarianteServiceImpl implements IAniversarianteService {
     @Autowired
     private AniversarianteRepository aniversarianteRepository;
 
@@ -52,15 +49,20 @@ public class AniversarianteServiceImpl implements AniversarianteService {
     }
 
     @Override
-    public Page<AniversarianteResponseDTO> findByNome(Pageable pageable, String nome) {
-        return aniversarianteRepository.findByNomeContainingIgnoreCase(nome, pageable)
+    public Page<AniversarianteResponseDTO> findAllByFilters(Pageable pageable, String nome) {
+        String nomeFilter = (nome != null && !nome.isBlank()) ? nome : null;
+
+        return aniversarianteRepository.findAllByFilters(nomeFilter, pageable)
                 .map(contratoMapper::toAniversarianteResponseDTO);
     }
 
     @Override
-    public Page<AniversarianteResponseDTO> findAll(Pageable pageable) {
-        return aniversarianteRepository.findAll(pageable)
-                .map(contratoMapper::toAniversarianteResponseDTO);
+    public AniversarianteResponseDTO update(Long id, AniversarianteRequestDTO request) {
+        Aniversariante aniversariante = returnAniversariante(id);
+
+        contratoMapper.updateAniversarianteData(aniversariante, request);
+
+        return contratoMapper.toAniversarianteResponseDTO(aniversarianteRepository.save(aniversariante));
     }
 
     private Aniversariante returnAniversariante(Long id) {

@@ -1,5 +1,6 @@
 package com.brothers.festas.dto.request;
 
+import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
 import lombok.Data;
 
@@ -21,6 +22,7 @@ public class ContratoRequestDTO {
     private String observacoes;
     private Double desconto;
     private Double acrescimo;
+    private EnumSituacaoContrato situacao;
 
     private List<Long> itensContrato;
     private List<Long> listaAniversariantes;

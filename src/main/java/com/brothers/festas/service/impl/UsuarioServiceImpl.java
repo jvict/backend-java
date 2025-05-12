@@ -6,7 +6,7 @@ import com.brothers.festas.model.Role;
 import com.brothers.festas.model.Usuario;
 import com.brothers.festas.repository.RoleRepository;
 import com.brothers.festas.repository.UsuarioRepository;
-import com.brothers.festas.service.UsuarioService;
+import com.brothers.festas.service.IUsuarioService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService {
+public class UsuarioServiceImpl implements IUsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;

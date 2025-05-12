@@ -1,4 +1,4 @@
-package com.brothers.festas.service;
+package com.brothers.festas.model;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

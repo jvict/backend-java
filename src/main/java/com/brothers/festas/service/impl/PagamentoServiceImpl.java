@@ -7,14 +7,14 @@ import com.brothers.festas.model.Contrato;
 import com.brothers.festas.model.Pagamento;
 import com.brothers.festas.repository.ContratoRepository;
 import com.brothers.festas.repository.PagamentoRepository;
-import com.brothers.festas.service.PagamentoService;
+import com.brothers.festas.service.IPagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class PagamentoServiceImpl implements PagamentoService {
+public class PagamentoServiceImpl implements IPagamentoService {
     @Autowired
     private PagamentoRepository pagamentoRepository;
 

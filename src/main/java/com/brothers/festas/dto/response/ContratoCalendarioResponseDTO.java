@@ -1,5 +1,6 @@
 package com.brothers.festas.dto.response;
 
+import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,12 +16,12 @@ public class ContratoCalendarioResponseDTO {
 
     private Long id;
     private String nomeCliente;
-    private String situacao;//Precisa entender o que seria
     private LocalDateTime dataHoraInicial;
     private LocalDateTime dataHoraFinal;
     private Double valorRecebido;
     private Double valorPendente;
     private Double valorTotal;
+    private EnumSituacaoContrato situacao;
 
 }
 

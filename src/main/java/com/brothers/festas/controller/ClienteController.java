@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
-
+@CrossOrigin(origins = "http:localhost:3000/")
 @RestController
 @RequestMapping("/cliente")
 @RequiredArgsConstructor
@@ -36,17 +36,10 @@ public class ClienteController {
         return ResponseEntity.ok().body(clienteService.findById(id));
     }
 
-    @GetMapping("/nome/{nome}")
-    public ResponseEntity<Page<ClienteResponseDTO>> findByName(Pageable pageable, @PathVariable String nome) {
-        return ResponseEntity.ok().body(clienteService.findByNome(pageable, nome));
-    }
-
     @GetMapping
-    public ResponseEntity<Page<ClienteResponseDTO>> findAll(Pageable pageable, @RequestParam(name = "nome", required = false, defaultValue = "") String nome) {
-        if(!nome.isEmpty()) {
-            return ResponseEntity.ok().body(clienteService.findByNome(pageable, nome));
-        }
-        return ResponseEntity.ok().body(clienteService.findAll(pageable));
+    public ResponseEntity<Page<ClienteResponseDTO>> findAll(@RequestParam(name = "nome", required = false) String nome,
+                                                            Pageable pageable) {
+        return ResponseEntity.ok().body(clienteService.findAllByFilters(nome, pageable));
     }
 
     @PostMapping("/importar")

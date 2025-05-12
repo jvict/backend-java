@@ -1,12 +1,15 @@
 package com.brothers.festas.util;
 
+import com.brothers.festas.dto.request.AniversarianteRequestDTO;
 import com.brothers.festas.dto.request.ContratoRequestDTO;
 import com.brothers.festas.dto.response.AniversarianteResponseDTO;
+import com.brothers.festas.dto.response.ClienteResponseDTO;
 import com.brothers.festas.dto.response.ContratoCalendarioResponseDTO;
 import com.brothers.festas.dto.response.ContratoResponseDTO;
 import com.brothers.festas.dto.response.ItemContratoResponseDTO;
 import com.brothers.festas.dto.response.PagamentoResponseDTO;
 import com.brothers.festas.dto.response.TemaResponseDTO;
+import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Aniversariante;
 import com.brothers.festas.model.Cliente;
 import com.brothers.festas.model.Contrato;
@@ -20,8 +23,8 @@ import com.brothers.festas.repository.TemaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class ContratoMapper {
     private final ClienteRepository clienteRepository;
     private final AniversarianteRepository aniversarianteRepository;
     private final ItemContratoRepository itemContratoRepository;
+    private final ClienteMapper clienteMapper;
 
     public Contrato toEntity(ContratoRequestDTO dto) {
         Contrato contrato = new Contrato();
@@ -52,6 +56,7 @@ public class ContratoMapper {
         contrato.setObservacoes(dto.getObservacoes());
         contrato.setDesconto(dto.getDesconto());
         contrato.setAcrescimo(dto.getAcrescimo());
+        contrato.setSituacao(dto.getSituacao());
 
         List<Aniversariante> aniversariantes = aniversarianteRepository.findAllById(dto.getListaAniversariantes());
         contrato.setListaAniversariantes(aniversariantes);
@@ -63,9 +68,14 @@ public class ContratoMapper {
     }
 
     public ContratoResponseDTO toResponse(Contrato contrato) {
+        ClienteResponseDTO cliente = contrato.getCliente() != null
+                        ? clienteMapper.toClienteDTO(clienteRepository.findById(contrato.getCliente().getId()))
+                        : null;
+
         return ContratoResponseDTO.builder()
                 .id(contrato.getId())
-                .cliente(contrato.getCliente() != null ? contrato.getCliente().getId() : null)
+                .cliente(cliente)
+                .situacao(contrato.getSituacao())
                 .valorRecebido(contrato.getValorRecebido())
                 .valorPendente(contrato.getValorPendente())
                 .valorTotal(contrato.getValorTotal())
@@ -77,6 +87,8 @@ public class ContratoMapper {
                 .observacoes(contrato.getObservacoes())
                 .desconto(contrato.getDesconto())
                 .acrescimo(contrato.getAcrescimo())
+                .dataCadastro(contrato.getDataCadastro())
+                .dataAtualizacao(contrato.getDataAtualizacao())
                 .itensContrato(contrato.getItensContrato() != null ? contrato.getItensContrato().stream()
                         .map(this::toItemContratoResponseDTO).toList() : List.of())
                 .listaAniversariantes(contrato.getListaAniversariantes() != null ? contrato.getListaAniversariantes().stream()
@@ -90,6 +102,7 @@ public class ContratoMapper {
         return ContratoCalendarioResponseDTO.builder()
                 .id(contrato.getId())
                 .nomeCliente(contrato.getCliente() != null ? contrato.getCliente().getNome() : null)
+                .situacao(contrato.getSituacao())
                 .valorRecebido(contrato.getValorRecebido())
                 .valorPendente(contrato.getValorPendente())
                 .valorTotal(contrato.getValorTotal())
@@ -136,4 +149,81 @@ public class ContratoMapper {
                 .contratoId(pagamento.getContrato().getId())
                 .build();
     }
+
+    public void updateAniversarianteData(Aniversariante aniversariante, AniversarianteRequestDTO aniversarianteRequestDTO){
+        if (aniversarianteRequestDTO.getNome() != null) {
+            aniversariante.setNome(aniversarianteRequestDTO.getNome());
+        }
+        if (aniversarianteRequestDTO.getDataNascimento() != null) {
+            aniversariante.setDataNascimento(aniversarianteRequestDTO.getDataNascimento());
+        }
+        if (aniversarianteRequestDTO.getIdade() != null) {
+            aniversariante.setIdade(aniversarianteRequestDTO.getIdade());
+        }
+        if (aniversarianteRequestDTO.getIdadeNoEvento() != null) {
+            aniversariante.setIdadeNoEvento(aniversarianteRequestDTO.getIdadeNoEvento());
+        }
+        if (aniversarianteRequestDTO.getTema() != null) {
+            temaRepository.findById(aniversarianteRequestDTO.getTema())
+                    .ifPresentOrElse(
+                            aniversariante::setTema,
+                            () -> { throw new ServiceException("Tema não encontrado com ID: " + aniversarianteRequestDTO.getTema()); }
+                    );
+        }
+    }
+
+    public void updateContratoData(Contrato contrato, ContratoRequestDTO dto) {
+
+        if (dto.getCliente() != null) {
+            Cliente cliente = clienteRepository.findById(dto.getCliente())
+                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+            contrato.setCliente(cliente);
+        }
+        if (dto.getValorRecebido() != null) {
+            contrato.setValorRecebido(dto.getValorRecebido());
+        }
+        if (dto.getValorPendente() != null) {
+            contrato.setValorPendente(dto.getValorPendente());
+        }
+        if (dto.getValorTotal() != null) {
+            contrato.setValorTotal(dto.getValorTotal());
+        }
+        if (dto.getTipoDoContrato() != null) {
+            contrato.setTipoDoContrato(dto.getTipoDoContrato());
+        }
+        if (dto.getDataHoraInicial() != null) {
+            contrato.setDataHoraInicial(dto.getDataHoraInicial());
+        }
+        if (dto.getDataHoraFinal() != null) {
+            contrato.setDataHoraFinal(dto.getDataHoraFinal());
+        }
+        if (dto.getDuracao() != null) {
+            contrato.setDuracao(dto.getDuracao());
+        }
+        if (dto.getQuantidadeConvidados() != null) {
+            contrato.setQuantidadeConvidados(dto.getQuantidadeConvidados());
+        }
+        //Não posso mudar a situação aqui
+        //if (dto.getSituacao() != null) {
+        //    contrato.setSituacao(dto.getSituacao());
+        //}
+        if (dto.getObservacoes() != null) {
+            contrato.setObservacoes(dto.getObservacoes());
+        }
+        if (dto.getDesconto() != null) {
+            contrato.setDesconto(dto.getDesconto());
+        }
+        if (dto.getAcrescimo() != null) {
+            contrato.setAcrescimo(dto.getAcrescimo());
+        }
+        if (dto.getItensContrato() != null) {
+            List<ItemContrato> itensContrato = itemContratoRepository.findAllById(dto.getItensContrato());
+            contrato.setItensContrato(itensContrato);
+        }
+        if (dto.getListaAniversariantes() != null) {
+            List<Aniversariante> aniversariantes = aniversarianteRepository.findAllById(dto.getListaAniversariantes());
+            contrato.setListaAniversariantes(aniversariantes);
+        }
+    }
+
 }
