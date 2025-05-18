@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
-@CrossOrigin(origins = "http:localhost:3000/")
+
 @RestController
 @RequestMapping("/cliente")
 @RequiredArgsConstructor

@@ -11,7 +11,9 @@ import com.brothers.festas.service.IPagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PagamentoServiceImpl implements IPagamentoService {
@@ -22,21 +24,33 @@ public class PagamentoServiceImpl implements IPagamentoService {
     private ContratoRepository contratoRepository;
 
     @Override
-    public PagamentoResponseDTO criarPagamento(Long idContrato, PagamentoRequestDTO request) throws ServiceException {
-        Optional<Contrato> contrato = contratoRepository.findById(idContrato);
-        if (contrato.isEmpty()){
+    public List<PagamentoResponseDTO> criarPagamento(Long idContrato, List<PagamentoRequestDTO> requestList) throws ServiceException {
+        Optional<Contrato> contratoOpt = contratoRepository.findById(idContrato);
+        if (contratoOpt.isEmpty()){
             throw new ServiceException("Contrato não encontrado para inserção do pagamento");
         }
 
-        Pagamento pagamento = new Pagamento();
-        pagamento.setValor(request.getValor());
-        pagamento.setMeioPagamento(request.getMeioPagamento());
-        pagamento.setDataPagamento(request.getDataPagamento());
-        pagamento.setRecebido(request.getRecebido());
-        pagamento.setObservacoes(request.getObservacoes());
-        pagamento.setContrato(contrato.get());
+        if (requestList.isEmpty()){
+            throw new ServiceException("A lista de pagamentos está vazia");
+        }
 
-        return new PagamentoResponseDTO(pagamentoRepository.save(pagamento));
+        Contrato contrato = contratoOpt.get();
+
+        return requestList.stream()
+                .map(request -> {
+                    Pagamento pagamento = new Pagamento();
+                    pagamento.setValor(request.getValor());
+                    pagamento.setMeioPagamento(request.getMeioPagamento());
+                    pagamento.setDataPagamento(request.getDataPagamento());
+                    pagamento.setRecebido(request.getRecebido());
+                    pagamento.setObservacoes(request.getObservacoes());
+                    pagamento.setContrato(contrato);
+
+                    Pagamento saved = pagamentoRepository.save(pagamento);
+                    return new PagamentoResponseDTO(saved); // ou construa manualmente
+                })
+                .collect(Collectors.toList());
+
     }
 
 }

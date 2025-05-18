@@ -6,12 +6,12 @@ import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Usuario;
 import com.brothers.festas.service.security.AuthService;
 import com.brothers.festas.service.impl.UsuarioServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http:localhost:3000/")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

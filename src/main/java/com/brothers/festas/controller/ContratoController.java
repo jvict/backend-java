@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@CrossOrigin(origins = "http:localhost:3000/")
 @RestController
 @RequestMapping("/contrato")
 @RequiredArgsConstructor
