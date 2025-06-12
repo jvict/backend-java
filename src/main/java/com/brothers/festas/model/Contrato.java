@@ -64,14 +64,6 @@ public class Contrato {
     )
     private List<ItemContrato> itensContrato = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "contrato_aniversariante",
-            joinColumns = @JoinColumn(name = "contrato_id"),
-            inverseJoinColumns = @JoinColumn(name = "aniversariante_id")
-    )
-    private List<Aniversariante> listaAniversariantes;
-
     @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos;
 
@@ -80,5 +72,16 @@ public class Contrato {
 
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
+
+    @ManyToMany
+    @JoinTable(
+            name = "contrato_tema",
+            joinColumns = @JoinColumn(name = "contrato_id"),
+            inverseJoinColumns = @JoinColumn(name = "tema_id")
+    )
+    private List<Tema> temas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Aniversariante> aniversariantes = new ArrayList<>();
 
 }

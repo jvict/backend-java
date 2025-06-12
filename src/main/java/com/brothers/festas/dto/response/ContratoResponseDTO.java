@@ -1,7 +1,9 @@
 package com.brothers.festas.dto.response;
 
+import com.brothers.festas.dto.request.AniversarianteRequestDTO;
 import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,10 +34,10 @@ public class ContratoResponseDTO {
     private EnumSituacaoContrato situacao;
     private LocalDateTime dataCadastro;
     private LocalDateTime dataAtualizacao;
+    private List<AniversarianteResponseDTO> aniversariantes;
 
     private List<TemaResponseDTO> temas;
     private List<ItemContratoResponseDTO> itensContrato;
-    private List<AniversarianteResponseDTO> listaAniversariantes;
     private List<PagamentoResponseDTO> pagamentos;
 }
 

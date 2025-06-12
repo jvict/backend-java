@@ -5,9 +5,7 @@ import lombok.Data;
 @Data
 public class AniversarianteRequestDTO {
 
-    private String nome;
-    private String dataNascimento;
+    private String nomeAniversariante;
     private Integer idade;
     private Integer idadeNoEvento;
-    private Long tema;
 }

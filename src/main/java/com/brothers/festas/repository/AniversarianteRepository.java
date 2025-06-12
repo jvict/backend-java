@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AniversarianteRepository extends JpaRepository<Aniversariante, Long> {
 
-    Page<Aniversariante> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
+    Page<Aniversariante> findByNomeAniversarianteContainingIgnoreCase(String nome, Pageable pageable);
 
     @Query("""
     SELECT a FROM Aniversariante a
-    WHERE (:nome IS NULL OR LOWER(a.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+    WHERE (:nome IS NULL OR LOWER(a.nomeAniversariante) LIKE LOWER(CONCAT('%', :nome, '%')))
 """)
     Page<Aniversariante> findAllByFilters(@Param("nome") String nome,
                                           Pageable pageable);

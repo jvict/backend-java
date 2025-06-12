@@ -58,6 +58,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Gerar PDF com iText7 -->
 		<dependency>
 			<groupId>com.itextpdf</groupId>

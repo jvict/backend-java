@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,26 +44,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers("/auth/register").permitAll()
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/admin/**").hasAuthority(ADMIN)
-                        .requestMatchers("/user/**").hasAnyAuthority(USER, ADMIN)
-                        .requestMatchers("/contrato/**").hasAnyAuthority(USER, ADMIN)
-                        .requestMatchers("/aniversariante/**").hasAnyAuthority(USER, ADMIN)
-                        .requestMatchers("/item-contrato/**").hasAnyAuthority(USER, ADMIN)
-                        .requestMatchers("/tema/**").hasAnyAuthority(USER, ADMIN)
-                        .requestMatchers("/cliente/**").hasAnyAuthority(USER, ADMIN)
-                        .requestMatchers("/pagamento/**").hasAnyAuthority(USER, ADMIN)
-                        .anyRequest().authenticated()
-                )
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-                .csrf(AbstractHttpConfigurer::disable)
+        http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Adiciona o filtro JWT
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
-
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().permitAll()
+                )
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -71,11 +61,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-            "http://localhost:3000",
-            "https://crack-barnacle-deeply.ngrok-free.app"
-         ));
+                "http://localhost:3000",
+                "https://crack-barnacle-deeply.ngrok-free.app",
+                "https://similarly-evolving-pony.ngrok-free.app"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Cookie", "ngrok-skip-browser-warning")); // Certifique-se de incluir todos os headers necessários
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Authorization"));
 

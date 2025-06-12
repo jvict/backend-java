@@ -12,19 +12,15 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AniversarianteResponseDTO {
     private Long id;
-    private String nome;
-    private String dataNascimento;
+    private String nomeAniversariante;
     private Integer idade;
     private Integer idadeNoEvento;
-    private TemaResponseDTO tema;
 
     public AniversarianteResponseDTO(Aniversariante aniversariante) {
         this.id = aniversariante.getId();
-        this.nome = aniversariante.getNome();
-        this.dataNascimento = aniversariante.getDataNascimento();
+        this.nomeAniversariante = aniversariante.getNomeAniversariante();
         this.idade = aniversariante.getIdade();
         this.idadeNoEvento = aniversariante.getIdadeNoEvento();
-        this.tema = aniversariante.getTema() != null ? new TemaResponseDTO(aniversariante.getTema()) : null;
     }
 }
 

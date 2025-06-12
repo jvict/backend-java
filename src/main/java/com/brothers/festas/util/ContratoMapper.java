@@ -1,6 +1,5 @@
 package com.brothers.festas.util;
 
-import com.brothers.festas.dto.request.AniversarianteRequestDTO;
 import com.brothers.festas.dto.request.ContratoRequestDTO;
 import com.brothers.festas.dto.response.AniversarianteResponseDTO;
 import com.brothers.festas.dto.response.ClienteResponseDTO;
@@ -9,7 +8,6 @@ import com.brothers.festas.dto.response.ContratoResponseDTO;
 import com.brothers.festas.dto.response.ItemContratoResponseDTO;
 import com.brothers.festas.dto.response.PagamentoResponseDTO;
 import com.brothers.festas.dto.response.TemaResponseDTO;
-import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Aniversariante;
 import com.brothers.festas.model.Cliente;
 import com.brothers.festas.model.Contrato;
@@ -23,8 +21,8 @@ import com.brothers.festas.repository.TemaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -58,11 +56,22 @@ public class ContratoMapper {
         contrato.setAcrescimo(dto.getAcrescimo());
         contrato.setSituacao(dto.getSituacao());
 
-        List<Aniversariante> aniversariantes = aniversarianteRepository.findAllById(dto.getListaAniversariantes());
-        contrato.setListaAniversariantes(aniversariantes);
-
         List<ItemContrato> itensContrato = itemContratoRepository.findAllById(dto.getItensContrato());
         contrato.setItensContrato(itensContrato);
+
+        List<Tema> temas = temaRepository.findAllById(dto.getTemas());
+        contrato.setTemas(temas);
+
+        List<Aniversariante> aniversariantes = dto.getAniversariantes().stream().map(aniversarianteDTO -> {
+            Aniversariante aniversariante = new Aniversariante();
+            aniversariante.setNomeAniversariante(aniversarianteDTO.getNomeAniversariante());
+            aniversariante.setIdade(aniversarianteDTO.getIdade());
+            aniversariante.setIdadeNoEvento(aniversarianteDTO.getIdadeNoEvento());
+            aniversariante.setContrato(contrato);
+            return aniversariante;
+        }).collect(Collectors.toList());
+
+        contrato.setAniversariantes(aniversariantes);
 
         return contrato;
     }
@@ -91,10 +100,13 @@ public class ContratoMapper {
                 .dataAtualizacao(contrato.getDataAtualizacao())
                 .itensContrato(contrato.getItensContrato() != null ? contrato.getItensContrato().stream()
                         .map(this::toItemContratoResponseDTO).toList() : List.of())
-                .listaAniversariantes(contrato.getListaAniversariantes() != null ? contrato.getListaAniversariantes().stream()
-                        .map(this::toAniversarianteResponseDTO).toList() : List.of())
                 .pagamentos(contrato.getPagamentos() != null ? contrato.getPagamentos().stream()
                         .map(this::toPagamentoResponseDTO).toList() : List.of())
+                .temas(contrato.getTemas() != null ? contrato.getTemas().stream()
+                        .map(this::toTemaResponseDTO).toList() : List.of())
+                .aniversariantes(contrato.getAniversariantes() != null ? contrato.getAniversariantes().stream()
+                        .map(this::toAniversarianteResponseDTO).toList() : List.of())
+
                 .build();
     }
 
@@ -130,11 +142,9 @@ public class ContratoMapper {
     public AniversarianteResponseDTO toAniversarianteResponseDTO(Aniversariante aniversariante) {
         return AniversarianteResponseDTO.builder()
                 .id(aniversariante.getId())
-                .nome(aniversariante.getNome())
-                .dataNascimento(aniversariante.getDataNascimento())
+                .nomeAniversariante(aniversariante.getNomeAniversariante())
                 .idade(aniversariante.getIdade())
                 .idadeNoEvento(aniversariante.getIdadeNoEvento())
-                .tema(aniversariante.getTema() != null ? new TemaResponseDTO(aniversariante.getTema()) : null)
                 .build();
     }
 
@@ -148,28 +158,6 @@ public class ContratoMapper {
                 .observacoes(pagamento.getObservacoes())
                 .contratoId(pagamento.getContrato().getId())
                 .build();
-    }
-
-    public void updateAniversarianteData(Aniversariante aniversariante, AniversarianteRequestDTO aniversarianteRequestDTO){
-        if (aniversarianteRequestDTO.getNome() != null) {
-            aniversariante.setNome(aniversarianteRequestDTO.getNome());
-        }
-        if (aniversarianteRequestDTO.getDataNascimento() != null) {
-            aniversariante.setDataNascimento(aniversarianteRequestDTO.getDataNascimento());
-        }
-        if (aniversarianteRequestDTO.getIdade() != null) {
-            aniversariante.setIdade(aniversarianteRequestDTO.getIdade());
-        }
-        if (aniversarianteRequestDTO.getIdadeNoEvento() != null) {
-            aniversariante.setIdadeNoEvento(aniversarianteRequestDTO.getIdadeNoEvento());
-        }
-        if (aniversarianteRequestDTO.getTema() != null) {
-            temaRepository.findById(aniversarianteRequestDTO.getTema())
-                    .ifPresentOrElse(
-                            aniversariante::setTema,
-                            () -> { throw new ServiceException("Tema não encontrado com ID: " + aniversarianteRequestDTO.getTema()); }
-                    );
-        }
     }
 
     public void updateContratoData(Contrato contrato, ContratoRequestDTO dto) {
@@ -220,9 +208,21 @@ public class ContratoMapper {
             List<ItemContrato> itensContrato = itemContratoRepository.findAllById(dto.getItensContrato());
             contrato.setItensContrato(itensContrato);
         }
-        if (dto.getListaAniversariantes() != null) {
-            List<Aniversariante> aniversariantes = aniversarianteRepository.findAllById(dto.getListaAniversariantes());
-            contrato.setListaAniversariantes(aniversariantes);
+        if (dto.getTemas() != null) {
+            List<Tema> temas = temaRepository.findAllById(dto.getTemas());
+            contrato.setTemas(temas);
+        }
+        if (dto.getAniversariantes() != null) {
+            List<Aniversariante> aniversariantes = dto.getAniversariantes().stream().map(aniversarianteDTO -> {
+                Aniversariante aniversariante = new Aniversariante();
+                aniversariante.setNomeAniversariante(aniversarianteDTO.getNomeAniversariante());
+                aniversariante.setIdade(aniversarianteDTO.getIdade());
+                aniversariante.setIdadeNoEvento(aniversarianteDTO.getIdadeNoEvento());
+                aniversariante.setContrato(contrato);
+                return aniversariante;
+            }).collect(Collectors.toList());
+
+            contrato.setAniversariantes(aniversariantes);
         }
     }
 

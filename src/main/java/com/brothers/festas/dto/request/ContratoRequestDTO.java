@@ -1,7 +1,9 @@
 package com.brothers.festas.dto.request;
 
+import com.brothers.festas.model.Aniversariante;
 import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
+import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -24,8 +26,10 @@ public class ContratoRequestDTO {
     private Double acrescimo;
     private EnumSituacaoContrato situacao;
 
+    private List<AniversarianteRequestDTO> aniversariantes;
+
     private List<Long> itensContrato;
-    private List<Long> listaAniversariantes;
+    private List<Long> temas;
 
 }
 
