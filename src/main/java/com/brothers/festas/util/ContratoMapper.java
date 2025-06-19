@@ -1,5 +1,6 @@
 package com.brothers.festas.util;
 
+import com.brothers.festas.dto.request.AniversarianteRequestDTO;
 import com.brothers.festas.dto.request.ContratoRequestDTO;
 import com.brothers.festas.dto.response.AniversarianteResponseDTO;
 import com.brothers.festas.dto.response.ClienteResponseDTO;
@@ -213,16 +214,35 @@ public class ContratoMapper {
             contrato.setTemas(temas);
         }
         if (dto.getAniversariantes() != null) {
-            List<Aniversariante> aniversariantes = dto.getAniversariantes().stream().map(aniversarianteDTO -> {
-                Aniversariante aniversariante = new Aniversariante();
+            // IDs dos aniversariantes enviados no request (se houver ID nos DTOs)
+            List<Long> novosIds = dto.getAniversariantes().stream()
+                    .map(AniversarianteRequestDTO::getId) // Certifique-se de que AniversarianteRequestDTO possui 'id'.
+                    .filter(id -> id != null) // Evita IDs nulos
+                    .toList();
+
+            // Remover aniversariantes que não estão mais no DTO
+            contrato.getAniversariantes().removeIf(aniversariante ->
+                    !novosIds.contains(aniversariante.getId()) // Remove itens não presentes no request
+            );
+
+            // Adicionar ou atualizar aniversariantes
+            for (AniversarianteRequestDTO aniversarianteDTO : dto.getAniversariantes()) {
+                Aniversariante aniversariante = contrato.getAniversariantes().stream()
+                        .filter(a -> a.getId() != null && a.getId().equals(aniversarianteDTO.getId())) // Busca pelo ID
+                        .findFirst()
+                        .orElseGet(() -> {
+                            // Se não encontrou, cria um novo aniversariante
+                            Aniversariante novoAniversariante = new Aniversariante();
+                            novoAniversariante.setContrato(contrato); // Relaciona com o contrato
+                            contrato.getAniversariantes().add(novoAniversariante);
+                            return novoAniversariante;
+                        });
+
+                // Atualiza as propriedades do aniversariante
                 aniversariante.setNomeAniversariante(aniversarianteDTO.getNomeAniversariante());
                 aniversariante.setIdade(aniversarianteDTO.getIdade());
                 aniversariante.setIdadeNoEvento(aniversarianteDTO.getIdadeNoEvento());
-                aniversariante.setContrato(contrato);
-                return aniversariante;
-            }).collect(Collectors.toList());
-
-            contrato.setAniversariantes(aniversariantes);
+            }
         }
     }
 
