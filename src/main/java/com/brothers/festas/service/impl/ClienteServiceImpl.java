@@ -31,10 +31,11 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     public Page<ClienteResponseDTO> findAllByFilters(String nome, Pageable pageable) {
-        String nomeFilter = (nome != null && !nome.isBlank()) ? nome : null;
+        Page<Cliente> page = (nome != null && !nome.isBlank())
+                ? clienteRepository.findByNomeContainingIgnoreCase(nome, pageable)
+                : clienteRepository.findAll(pageable);
 
-        return clienteRepository.findAllByFilters(nomeFilter, pageable)
-                .map(clienteMapper::toClienteDTO);
+        return page.map(clienteMapper::toClienteDTO);
     }
 
     @Override

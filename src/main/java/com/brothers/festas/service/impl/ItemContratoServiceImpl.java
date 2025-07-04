@@ -3,6 +3,7 @@ package com.brothers.festas.service.impl;
 import com.brothers.festas.dto.request.ItemContratoRequestDTO;
 import com.brothers.festas.dto.response.ItemContratoResponseDTO;
 import com.brothers.festas.exception.ServiceException;
+import com.brothers.festas.model.Cliente;
 import com.brothers.festas.model.ItemContrato;
 import com.brothers.festas.repository.ItemContratoRepository;
 import com.brothers.festas.service.IItemContratoService;
@@ -37,8 +38,11 @@ public class ItemContratoServiceImpl implements IItemContratoService {
 
     @Override
     public Page<ItemContratoResponseDTO> findAll(Pageable pageable, String descricao) {
-        return itemContratoRepository.findAllByFilters(pageable, descricao)
-                .map(contratoMapper::toItemContratoResponseDTO);
+        Page<ItemContrato> page = (descricao != null && !descricao.isBlank())
+                ? itemContratoRepository.findByDescricaoContainingIgnoreCase(descricao, pageable)
+                : itemContratoRepository.findAll(pageable);
+
+        return page.map(contratoMapper::toItemContratoResponseDTO);
     }
 
     private ItemContrato returnItemContrato(Long id) {

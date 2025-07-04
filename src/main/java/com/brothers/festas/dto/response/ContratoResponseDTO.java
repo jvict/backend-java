@@ -1,9 +1,7 @@
 package com.brothers.festas.dto.response;
 
-import com.brothers.festas.dto.request.AniversarianteRequestDTO;
 import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

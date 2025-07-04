@@ -62,8 +62,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "https://crack-barnacle-deeply.ngrok-free.app",
-                "https://similarly-evolving-pony.ngrok-free.app"
+                "https://festas-front.vercel.app",
+                "https://www.borafesta.com.br",
+                "https://api.borafesta.com.br"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Cookie", "ngrok-skip-browser-warning")); // Certifique-se de incluir todos os headers necessários

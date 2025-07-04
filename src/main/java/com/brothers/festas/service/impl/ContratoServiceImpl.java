@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.brothers.festas.repository.ContratoSpecifications.byFilters;
+
 @Service
 @RequiredArgsConstructor
 public class ContratoServiceImpl implements IContratoService {
@@ -35,10 +37,8 @@ public class ContratoServiceImpl implements IContratoService {
 
     @Override
     public Page<ContratoResponseDTO> findAllByFilters(Pageable pageable, String nome, LocalDateTime dataHoraInicial, LocalDateTime dataHoraFinal) {
-        String nomeFilter = (nome != null && !nome.isBlank()) ? nome : null;
-
-        return contratoRepository.findAllByFilters(nomeFilter, dataHoraInicial, dataHoraFinal, pageable)
-                .map(contratoMapper::toResponse);
+        Page<Contrato> page = contratoRepository.findAll(byFilters(nome, dataHoraInicial, dataHoraFinal), pageable);
+        return page.map(contratoMapper::toResponse);
     }
 
     @Override

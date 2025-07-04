@@ -6,16 +6,17 @@ import com.brothers.festas.dto.response.AniversarianteResponseDTO;
 import com.brothers.festas.dto.response.ClienteResponseDTO;
 import com.brothers.festas.dto.response.ContratoCalendarioResponseDTO;
 import com.brothers.festas.dto.response.ContratoResponseDTO;
+import com.brothers.festas.dto.response.ImagemResponseDTO;
 import com.brothers.festas.dto.response.ItemContratoResponseDTO;
 import com.brothers.festas.dto.response.PagamentoResponseDTO;
 import com.brothers.festas.dto.response.TemaResponseDTO;
 import com.brothers.festas.model.Aniversariante;
 import com.brothers.festas.model.Cliente;
 import com.brothers.festas.model.Contrato;
+import com.brothers.festas.model.Imagem;
 import com.brothers.festas.model.ItemContrato;
 import com.brothers.festas.model.Pagamento;
 import com.brothers.festas.model.Tema;
-import com.brothers.festas.repository.AniversarianteRepository;
 import com.brothers.festas.repository.ClienteRepository;
 import com.brothers.festas.repository.ItemContratoRepository;
 import com.brothers.festas.repository.TemaRepository;
@@ -31,7 +32,6 @@ public class ContratoMapper {
 
     private final TemaRepository temaRepository;
     private final ClienteRepository clienteRepository;
-    private final AniversarianteRepository aniversarianteRepository;
     private final ItemContratoRepository itemContratoRepository;
     private final ClienteMapper clienteMapper;
 
@@ -158,6 +158,15 @@ public class ContratoMapper {
                 .recebido(pagamento.getRecebido())
                 .observacoes(pagamento.getObservacoes())
                 .contratoId(pagamento.getContrato().getId())
+                .build();
+    }
+
+    public ImagemResponseDTO toImagemResponseDTO(Imagem imagem) {
+        return ImagemResponseDTO.builder()
+                .id(imagem.getId())
+                .url(imagem.getUrl())
+                .descricao(imagem.getDescricao())
+                .nomeArquivoOriginal(imagem.getNomeArquivoOriginal())
                 .build();
     }
 

@@ -1,10 +1,12 @@
 package com.brothers.festas.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -20,6 +22,10 @@ public class Tema {
     private Long id;
     private String descricao;
     private String observacoes;
+
+
+    @OneToMany(mappedBy = "tema", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Imagem> imagens = new ArrayList<>();
 
     @ManyToMany(mappedBy = "temas")
     private List<Contrato> contratos = new ArrayList<>();

@@ -1,11 +1,7 @@
 package com.brothers.festas.dto.request;
 
-import com.brothers.festas.model.Aniversariante;
 import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.model.enums.EnumTipoDoContrato;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -28,7 +24,6 @@ public class ContratoRequestDTO {
     private Double acrescimo;
     private EnumSituacaoContrato situacao;
 
-    @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AniversarianteRequestDTO> aniversariantes;
 
     private List<Long> itensContrato;
