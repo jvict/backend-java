@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Data
 public class PagamentoRequestDTO {
 
+    private Long id;
     private Double valor;
     private EnumMeioPagamento meioPagamento;
     private LocalDate dataPagamento;

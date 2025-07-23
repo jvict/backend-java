@@ -1,6 +1,7 @@
 package com.brothers.festas.service.impl;
 
 import com.brothers.festas.dto.request.ItemContratoRequestDTO;
+import com.brothers.festas.dto.request.ItemContratoUpdateRequestDTO;
 import com.brothers.festas.dto.response.ItemContratoResponseDTO;
 import com.brothers.festas.exception.ServiceException;
 import com.brothers.festas.model.Cliente;
@@ -49,4 +50,21 @@ public class ItemContratoServiceImpl implements IItemContratoService {
         return itemContratoRepository.findById(id)
                 .orElseThrow(()-> new ServiceException("Item do Contrato não encontrado no banco de dados!"));
     }
+
+    @Override
+    public ItemContratoResponseDTO atualizarItem(Long id, ItemContratoUpdateRequestDTO request) {
+
+        ItemContrato item = returnItemContrato(id);
+
+        if (request.getDescricao() != null) {
+            item.setDescricao(request.getDescricao());
+        }
+
+        if (request.getValor() != null) {
+            item.setValor(request.getValor());
+        }
+
+        return contratoMapper.toItemContratoResponseDTO(itemContratoRepository.save(item));
+    }
+
 }

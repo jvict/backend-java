@@ -2,6 +2,7 @@ package com.brothers.festas.controller;
 
 import com.brothers.festas.dto.response.ImagemResponseDTO;
 import com.brothers.festas.dto.request.TemaRequestDTO;
+import com.brothers.festas.dto.request.TemaUpdateRequestDTO;
 import com.brothers.festas.dto.response.TemaResponseDTO;
 import com.brothers.festas.model.Imagem;
 import com.brothers.festas.model.Tema;
@@ -45,6 +46,12 @@ public class TemaController {
     public ResponseEntity<Page<TemaResponseDTO>> findAllByFilters(Pageable pageable,
                                                          @RequestParam(name = "descricao", required = false) String descricao) {
         return ResponseEntity.ok().body(iTemaService.findAllByFilters(pageable, descricao));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TemaResponseDTO> atualizar(@PathVariable Long id,
+                                                     @RequestBody TemaUpdateRequestDTO request) {
+        return ResponseEntity.ok(iTemaService.atualizarTema(id, request));
     }
 
     @PostMapping("/{id}/uploadImage")

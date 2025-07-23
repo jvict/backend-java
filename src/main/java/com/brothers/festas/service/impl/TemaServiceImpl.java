@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.brothers.festas.dto.request.TemaRequestDTO;
+import com.brothers.festas.dto.request.TemaUpdateRequestDTO;
 import com.brothers.festas.dto.response.ImagemResponseDTO;
 import com.brothers.festas.dto.response.TemaResponseDTO;
 import com.brothers.festas.exception.ServiceException;
@@ -25,8 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -201,4 +200,20 @@ public class TemaServiceImpl implements ITemaService {
         return temaRepository.findById(id)
                 .orElseThrow(()-> new ServiceException("Tema não encontrado no banco de dados!"));
     }
+    @Override
+    public TemaResponseDTO atualizarTema(Long id, TemaUpdateRequestDTO request) {
+        Tema tema = temaRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Tema não encontrado com ID: " + id));
+
+        if (request.getDescricao() != null) {
+            tema.setDescricao(request.getDescricao());
+        }
+
+        if (request.getObservacoes() != null) {
+            tema.setObservacoes(request.getObservacoes());
+        }
+
+        return new TemaResponseDTO(temaRepository.save(tema));
+    }
+
 }
