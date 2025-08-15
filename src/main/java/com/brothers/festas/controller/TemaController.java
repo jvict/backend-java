@@ -44,7 +44,7 @@ public class TemaController {
 
     @GetMapping
     public ResponseEntity<Page<TemaResponseDTO>> findAllByFilters(Pageable pageable,
-                                                         @RequestParam(name = "descricao", required = false) String descricao) {
+                                                                  @RequestParam(name = "descricao", required = false) String descricao) {
         return ResponseEntity.ok().body(iTemaService.findAllByFilters(pageable, descricao));
     }
 
@@ -108,4 +108,20 @@ public class TemaController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        try {
+            iTemaService.deletarTema(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("não encontrado")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            System.err.println("Erro inesperado ao tentar deletar tema: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            System.err.println("Erro ao deletar tema: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

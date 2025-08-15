@@ -136,6 +136,13 @@ public class TemaServiceImpl implements ITemaService {
     }
 
     @Override
+    public void deletarTema(Long id) {
+        Tema tema = temaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tema não encontrado"));
+        temaRepository.delete(tema);
+    }
+
+    @Override
     public void deleteFile(String fileUrl) {
         String s3Key;
         try {

@@ -1,5 +1,6 @@
 package com.brothers.festas.service.security;
 
+import com.brothers.festas.model.Role;
 import com.brothers.festas.model.Usuario;
 import com.brothers.festas.repository.UsuarioRepository;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -36,8 +39,13 @@ public class AuthService {
         Usuario user = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        List<String> rolesNames = user.getRoles().stream()
+                .map(Role::getNome)
+                .collect(Collectors.toList());
+
         return Jwts.builder()
                 .setSubject(user.getEmail())
+                .claim("roles", rolesNames)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secretKey)

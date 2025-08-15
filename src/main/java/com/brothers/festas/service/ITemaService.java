@@ -16,4 +16,6 @@ public interface ITemaService {
 
     String uploadFile(Long temaId, MultipartFile file);
     void deleteFile(String fileUrl);
+    void deletarTema(Long id);
+
 }
