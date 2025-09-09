@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/itens-bar")
+@RequestMapping("/itens-bar")
 @RequiredArgsConstructor
 public class ItensBarController {
 

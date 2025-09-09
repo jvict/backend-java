@@ -33,9 +33,9 @@ public class ContratoResponseDTO {
     private LocalDateTime dataCadastro;
     private LocalDateTime dataAtualizacao;
     private List<AniversarianteResponseDTO> aniversariantes;
-
     private List<TemaResponseDTO> temas;
     private List<ItemContratoResponseDTO> itensContrato;
     private List<PagamentoResponseDTO> pagamentos;
-}
 
+    private Long controleFesta;
+}

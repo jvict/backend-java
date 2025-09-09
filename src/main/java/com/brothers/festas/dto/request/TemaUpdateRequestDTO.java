@@ -5,8 +5,6 @@ import lombok.Data;
 
 @Data
 public class TemaUpdateRequestDTO {
-
-
     private String descricao;
 
     private String observacoes;

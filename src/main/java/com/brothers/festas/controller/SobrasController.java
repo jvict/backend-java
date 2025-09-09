@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sobras")
+@RequestMapping("/sobra")
 @RequiredArgsConstructor
 public class SobrasController {
 

@@ -1,28 +1,17 @@
 package com.brothers.festas.util;
 
-import com.brothers.festas.dto.request.AniversarianteRequestDTO;
-import com.brothers.festas.dto.request.ContratoRequestDTO;
-import com.brothers.festas.dto.response.AniversarianteResponseDTO;
-import com.brothers.festas.dto.response.ClienteResponseDTO;
-import com.brothers.festas.dto.response.ContratoCalendarioResponseDTO;
-import com.brothers.festas.dto.response.ContratoResponseDTO;
-import com.brothers.festas.dto.response.ImagemResponseDTO;
-import com.brothers.festas.dto.response.ItemContratoResponseDTO;
-import com.brothers.festas.dto.response.PagamentoResponseDTO;
-import com.brothers.festas.dto.response.TemaResponseDTO;
-import com.brothers.festas.model.Aniversariante;
-import com.brothers.festas.model.Cliente;
-import com.brothers.festas.model.Contrato;
-import com.brothers.festas.model.Imagem;
-import com.brothers.festas.model.ItemContrato;
-import com.brothers.festas.model.Pagamento;
-import com.brothers.festas.model.Tema;
+import com.brothers.festas.dto.request.*;
+import com.brothers.festas.dto.response.*;
+import com.brothers.festas.model.*;
 import com.brothers.festas.repository.ClienteRepository;
+import com.brothers.festas.repository.ControleFestaRepository;
 import com.brothers.festas.repository.ItemContratoRepository;
 import com.brothers.festas.repository.TemaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +22,7 @@ public class ContratoMapper {
     private final TemaRepository temaRepository;
     private final ClienteRepository clienteRepository;
     private final ItemContratoRepository itemContratoRepository;
+    private final ControleFestaRepository controleFestaRepository; // <-- adicionado
     private final ClienteMapper clienteMapper;
 
     public Contrato toEntity(ContratoRequestDTO dto) {
@@ -46,7 +36,6 @@ public class ContratoMapper {
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         contrato.setCliente(cliente);
 
-        contrato.setCliente(cliente);
         contrato.setTipoDoContrato(dto.getTipoDoContrato());
         contrato.setDataHoraInicial(dto.getDataHoraInicial());
         contrato.setDataHoraFinal(dto.getDataHoraFinal());
@@ -71,16 +60,25 @@ public class ContratoMapper {
             aniversariante.setContrato(contrato);
             return aniversariante;
         }).collect(Collectors.toList());
-
         contrato.setAniversariantes(aniversariantes);
+
+        // === VINCULA O CONTRATO AO CONTROLE DE FESTA ===
+        if (dto.getIdControleFesta() != null) {
+            ControleFesta controleFesta = controleFestaRepository.findById(dto.getIdControleFesta())
+                    .orElseThrow(() -> new RuntimeException("ControleFesta não encontrado"));
+            contrato.setControleFesta(controleFesta);
+        }
 
         return contrato;
     }
 
+
     public ContratoResponseDTO toResponse(Contrato contrato) {
-        ClienteResponseDTO cliente = contrato.getCliente() != null
-                        ? clienteMapper.toClienteDTO(clienteRepository.findById(contrato.getCliente().getId()))
-                        : null;
+        Cliente clienteEntity = contrato.getCliente() != null
+                ? clienteRepository.findById(contrato.getCliente().getId())
+                .orElse(null)
+                : null;
+        ClienteResponseDTO cliente = clienteEntity != null ? clienteMapper.toClienteDTO(clienteEntity) : null;
 
         return ContratoResponseDTO.builder()
                 .id(contrato.getId())
@@ -107,7 +105,7 @@ public class ContratoMapper {
                         .map(this::toTemaResponseDTO).toList() : List.of())
                 .aniversariantes(contrato.getAniversariantes() != null ? contrato.getAniversariantes().stream()
                         .map(this::toAniversarianteResponseDTO).toList() : List.of())
-
+                .controleFesta(contrato.getControleFesta().getId())
                 .build();
     }
 

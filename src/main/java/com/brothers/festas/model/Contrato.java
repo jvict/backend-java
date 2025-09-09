@@ -84,4 +84,7 @@ public class Contrato {
     @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Aniversariante> aniversariantes = new ArrayList<>();
 
+    // Relacionamento com ControleFesta
+    @OneToOne(mappedBy = "contrato", cascade = CascadeType.ALL)
+    private ControleFesta controleFesta;
 }

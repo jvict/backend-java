@@ -4,19 +4,20 @@ import com.brothers.festas.dto.request.ContratoRequestDTO;
 import com.brothers.festas.dto.response.ContratoCalendarioResponseDTO;
 import com.brothers.festas.dto.response.ContratoResponseDTO;
 import com.brothers.festas.exception.ServiceException;
-import com.brothers.festas.model.Cliente;
 import com.brothers.festas.model.Contrato;
+import com.brothers.festas.model.ControleFesta;
 import com.brothers.festas.model.enums.EnumSituacaoContrato;
 import com.brothers.festas.repository.ContratoRepository;
+import com.brothers.festas.service.ControleFestaService;
 import com.brothers.festas.service.IContratoService;
 import com.brothers.festas.util.ContratoMapper;
+import com.brothers.festas.util.ControleFestaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.brothers.festas.repository.ContratoSpecifications.byFilters;
 
@@ -25,14 +26,27 @@ import static com.brothers.festas.repository.ContratoSpecifications.byFilters;
 public class ContratoServiceImpl implements IContratoService {
 
     private final ContratoRepository contratoRepository;
+    private final ControleFestaService controleFestaService;
     private final ContratoMapper contratoMapper;
+    private final ControleFestaMapper controleFestaMapper;
 
     @Override
     public ContratoResponseDTO salvarContrato(ContratoRequestDTO contratoRequestDTO) {
+        // 1. Converte o DTO em entidade Contrato
         Contrato contrato = contratoMapper.toEntity(contratoRequestDTO);
         contrato.setDataCadastro(LocalDateTime.now());
 
-        return contratoMapper.toResponse(contratoRepository.save(contrato));
+        // 2. Cria o ControleFesta vinculado ao contrato
+        ControleFesta controleFesta = new ControleFesta();
+        controleFesta.setData(contrato.getDataHoraInicial().toLocalDate());
+        controleFesta.setContrato(contrato);
+        contrato.setControleFesta(controleFesta);
+
+        // 3. Salva o contrato (o cascade salva o controleFesta também)
+        Contrato contratoSalvo = contratoRepository.save(contrato);
+
+        // 4. Retorna o DTO de resposta
+        return contratoMapper.toResponse(contratoSalvo);
     }
 
     @Override

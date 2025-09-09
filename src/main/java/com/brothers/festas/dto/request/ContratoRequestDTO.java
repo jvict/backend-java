@@ -29,5 +29,8 @@ public class ContratoRequestDTO {
     private List<Long> itensContrato;
     private List<Long> temas;
 
+    // Campo para vincular o ControleFesta
+    private Long idControleFesta;
+
 }
 
